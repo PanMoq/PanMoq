@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PanMoq.AutoMoq\PanMoq.AutoMoq.csproj" />
+    <ProjectReference Include="..\PanMoq.Fixturing.AutoFixture\PanMoq.Fixturing.AutoFixture.csproj" />
+    <ProjectReference Include="..\PanMoq.Fixturing.Moq\PanMoq.Fixturing.Moq.csproj" />
+    <ProjectReference Include="..\PanMoq.Fixturing.Primitives\PanMoq.Fixturing.Primitives.csproj" />
+  </ItemGroup>
+
+</Project>

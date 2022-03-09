@@ -1,0 +1,9 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>Bruce Markham</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © $(Authors) 2022</Copyright>
+  </PropertyGroup>
+
+</Project>
