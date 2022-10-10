@@ -4,7 +4,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace PanMoq.Specimens.ClassLibrary.Tests;
+namespace PanMoq.TargetExamples.ClassLibrary.Tests;
 
 public class AutoMoqFixtureTests : IClassFixture<AutoMoqFixture>
 {
