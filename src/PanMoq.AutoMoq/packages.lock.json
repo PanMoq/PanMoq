@@ -24,6 +24,12 @@
           "Microsoft.SourceLink.Common": "1.1.1"
         }
       },
+      "NuGetizer": {
+        "type": "Direct",
+        "requested": "[0.9.0, )",
+        "resolved": "0.9.0",
+        "contentHash": "b/W11DyGg1xpfm+8LUY+zxuDRnY3OyDpvNkh320GGnqkTydty0SBck8HVf+utjfx13XNPfTH5emSqyFTjnwBiw=="
+      },
       "AutoFixture": {
         "type": "Transitive",
         "resolved": "4.17.0",
@@ -1140,6 +1146,7 @@
         "type": "Project",
         "dependencies": {
           "AutoFixture": "[4.17.0, )",
+          "NuGetizer": "[0.9.0, )",
           "PanMoq.Fixturing.Primitives": "[1.0.0, )"
         }
       },
@@ -1147,11 +1154,15 @@
         "type": "Project",
         "dependencies": {
           "Moq": "[4.17.1, )",
+          "NuGetizer": "[0.9.0, )",
           "PanMoq.Fixturing.Primitives": "[1.0.0, )"
         }
       },
       "panmoq.fixturing.primitives": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "NuGetizer": "[0.9.0, )"
+        }
       }
     }
   }

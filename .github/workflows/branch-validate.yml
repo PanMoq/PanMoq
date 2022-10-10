@@ -1,0 +1,47 @@
+name: Branch Validate
+
+on:
+  workflow_call:
+
+jobs:
+  validate-code:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+    - name: Restore dependencies
+      run: dotnet restore PanMoq.sln
+    - name: Build
+      run: dotnet build PanMoq.sln --configuration Release --no-restore
+    - name: Test
+      run: dotnet test PanMoq.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+    - name: Code Coverage Summary Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage/*/coverage.cobertura.xml
+        badge: true
+        format: 'markdown'
+        output: 'both'
+    - name: Add Code Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: code-coverage-results.md
+    - name: Write Code Coverage to Job Summary
+      run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-report
+        path: code-coverage-results.md
