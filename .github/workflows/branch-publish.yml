@@ -1,0 +1,167 @@
+name: Branch Publish
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+
+jobs:
+  validation:
+    uses: ./.github/workflows/branch-validate.yml
+
+  calculate-version:
+    needs: validation
+    runs-on: ubuntu-latest
+    outputs:
+      gitversion_nuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      gitversion_assemblySemFileVer: ${{ steps.gitversion.outputs.assemblySemFileVer }}
+      gitversion_informationalVersion: ${{ steps.gitversion.outputs.informationalVersion }}
+      gitversion_assemblySemVer:  ${{ steps.gitversion.outputs.assemblySemVer }}
+      gitversion_fullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: dotnet tool install -g GitVersion.Tool
+      run: dotnet tool install -g GitVersion.Tool --version 5.10.3
+    - name: GitVersion ShowConfig
+      id: gitversion_showconfig
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+        additionalArguments: '/showConfig'
+    - name: GitVersion Execute
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+    - name: GitVersion Output Display
+      run: |
+        echo "Major: ${{ steps.gitversion.outputs.major }}"
+        echo "Minor: ${{ steps.gitversion.outputs.minor }}"
+        echo "Patch: ${{ steps.gitversion.outputs.patch }}"
+        echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
+        echo "PreReleaseTagWithDash: ${{ steps.gitversion.outputs.preReleaseTagWithDash }}"
+        echo "PreReleaseLabel: ${{ steps.gitversion.outputs.preReleaseLabel }}"
+        echo "PreReleaseNumber: ${{ steps.gitversion.outputs.preReleaseNumber }}"
+        echo "WeightedPreReleaseNumber: ${{ steps.gitversion.outputs.weightedPreReleaseNumber }}"
+        echo "BuildMetaData: ${{ steps.gitversion.outputs.buildMetaData }}"
+        echo "BuildMetaDataPadded: ${{ steps.gitversion.outputs.buildMetaDataPadded }}"
+        echo "FullBuildMetaData: ${{ steps.gitversion.outputs.fullBuildMetaData }}"
+        echo "MajorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}"
+        echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+        echo "LegacySemVer: ${{ steps.gitversion.outputs.legacySemVer }}"
+        echo "LegacySemVerPadded: ${{ steps.gitversion.outputs.legacySemVerPadded }}"
+        echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
+        echo "AssemblySemFileVer: ${{ steps.gitversion.outputs.assemblySemFileVer }}"
+        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+        echo "InformationalVersion: ${{ steps.gitversion.outputs.informationalVersion }}"
+        echo "BranchName: ${{ steps.gitversion.outputs.branchName }}"
+        echo "EscapedBranchName: ${{ steps.gitversion.outputs.escapedBranchName }}"
+        echo "Sha: ${{ steps.gitversion.outputs.sha }}"
+        echo "ShortSha: ${{ steps.gitversion.outputs.shortSha }}"
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+        echo "NuGetVersion: ${{ steps.gitversion.outputs.nuGetVersion }}"
+        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}"
+        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.nuGetPreReleaseTag }}"
+        echo "VersionSourceSha: ${{ steps.gitversion.outputs.versionSourceSha }}"
+        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
+        echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
+        echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
+        echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+
+  package:
+    needs: calculate-version
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - uses: actions/cache@v2
+      with:
+        path: ~/.nuget/packages
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget
+    - name: Restore dependencies
+      run: dotnet restore PanMoq.sln
+    - name: Build
+      run: dotnet build PanMoq.sln --configuration Release --no-restore
+    - name: Package outputs
+      run: dotnet pack PanMoq.sln --configuration Release --no-restore --include-source --output dist --p:BuildOnPack=false --p:IncludeSymbols=true --p:SymbolPackageFormat=snupkg --p:PackageVersion="${{ needs.calculate-version.outputs.gitversion_nuGetVersionV2 }}" --p:AssemblyFileVersionAttribute="${{ needs.calculate-version.outputs.gitversion_assemblySemFileVer }}" --p:AssemblyInformationalVersionAttribute="${{ needs.calculate-version.outputs.gitversion_informationalVersion }}" --p:AssemblyVersionAttribute="${{ needs.calculate-version.outputs.gitversion_assemblySemVer }}"
+    - name: Archive package artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: packages
+        path: dist
+
+  release:
+    needs:
+    - package
+    - calculate-version
+    if: ${{ (github.repository == 'PanMoq/PanMoq') && ((github.ref_name == 'main') || (github.ref_name == 'develop')) }}
+    concurrency:
+      group: ${{ github.workflow }}-package-${{ github.head_ref || github.ref || github.run_id }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download package artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: packages
+        path: dist
+    - name: Create release notes
+      uses: johnyherangi/create-release-notes@v1.0.1
+      id: create-release-notes
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        head-ref: ${{ github.sha }}
+    - name: Draft release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: "v${{ needs.calculate-version.outputs.gitversion_fullSemVer }}"
+        name: "v${{ needs.calculate-version.outputs.gitversion_fullSemVer }}"
+        allowUpdates: true
+        artifactErrorsFailBuild: true
+        artifacts: "dist/*"
+        body: "${{ steps.create-release-notes.outputs.release-notes }}"
+        commit: ${{ github.sha }}
+        draft: true
+        omitBody: false
+        omitBodyDuringUpdate: false
+        omitDraftDuringUpdate: false
+        omitName: false
+        omitNameDuringUpdate: false
+        omitPrereleaseDuringUpdate: false
+        prerelease: ${{ github.ref_name == 'develop' }}
+        removeArtifacts: true
+        replacesArtifacts: true
+        token: ${{ github.token }}
+        updateOnlyUnreleased: ${{ github.ref_name != 'develop' }}
+    - name: dotnet nuget push
+      run: dotnet nuget push dist/* --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
+    - name: Publish release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: "v${{ needs.calculate-version.outputs.gitversion_fullSemVer }}"
+        name: "v${{ needs.calculate-version.outputs.gitversion_fullSemVer }}"
+        allowUpdates: true
+        commit: ${{ github.sha }}
+        draft: false
+        omitBody: true
+        omitBodyDuringUpdate: true
+        omitDraftDuringUpdate: false
+        omitName: true
+        omitNameDuringUpdate: true
+        omitPrereleaseDuringUpdate: true
+        removeArtifacts: false
+        replacesArtifacts: false
+        token: ${{ github.token }}
+        updateOnlyUnreleased: ${{ github.ref_name != 'develop' }}

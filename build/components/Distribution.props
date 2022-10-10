@@ -1,0 +1,33 @@
+<Project>
+  <!--
+    This file is intended to be imported (indirectly) by a `Directory.Build.props`,
+      which in turn gets automatically imported during an _early_ build stage.
+
+    For more information about `Directory.Build.*`, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build
+  -->
+
+  <PropertyGroup>
+    <PanMoqAuthors>Bruce Markham</PanMoqAuthors>
+    <Authors>$(PanMoqAuthors)</Authors>
+    <CopyrightYearLatest>$([System.DateTime]::Now.Year)</CopyrightYearLatest>
+    <Copyright>Copyright © $(CopyrightYearLatest) $(Authors)</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IsPackable Condition="'$(IsTestProject)'=='true'">false</IsPackable>
+    <IsPackable Condition="'$(IsTestTargetExampleProject)'=='true'">false</IsPackable>
+    <IsPackable Condition="'$(IsPackable)'!='false'">true</IsPackable>
+    <PackageId Condition="'$(IsPackable)'=='true' And '$(PackageId)'==''">$(AssemblyName)</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)'=='true'">
+    <PackageFile Include="$(MSBuildThisFileDirectory)..\..\docs\images\logo.png" PackagePath="icon.png"/>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(IsPackable)'=='true'">
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" Version="0.9.0" />
+  </ItemGroup>
+
+</Project>

@@ -34,6 +34,12 @@
           "Microsoft.SourceLink.Common": "1.1.1"
         }
       },
+      "NuGetizer": {
+        "type": "Direct",
+        "requested": "[0.9.0, )",
+        "resolved": "0.9.0",
+        "contentHash": "b/W11DyGg1xpfm+8LUY+zxuDRnY3OyDpvNkh320GGnqkTydty0SBck8HVf+utjfx13XNPfTH5emSqyFTjnwBiw=="
+      },
       "Fare": {
         "type": "Transitive",
         "resolved": "2.1.1",
@@ -1004,7 +1010,10 @@
         }
       },
       "panmoq.fixturing.primitives": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "NuGetizer": "[0.9.0, )"
+        }
       }
     }
   }
