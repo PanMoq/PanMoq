@@ -1,0 +1,22 @@
+<Project>
+  <!--
+    This file is intended to be imported (indirectly) by a `Directory.Build.targets`,
+      which in turn gets automatically imported during a _late_ build stage.
+
+    For more information about `Directory.Build.*`, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build
+  -->
+
+  <PropertyGroup>
+    <!--
+      This depends on the `ContinuousIntegrationBuild` variable being set by our usage of
+       the `DotNet.ReproducibleBuilds` package, which is why we wait until a latter build
+       stage to use the variable.
+
+      For more information, see: https://github.com/dotnet/reproducible-builds
+    -->
+
+    <!-- For more information about `RestoreLockedMode`, see: https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/ -->
+    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)'=='true'">true</RestoreLockedMode>
+  </PropertyGroup>
+
+</Project>
