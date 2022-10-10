@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    This file is intended to be imported by a `Directory.Build.targets`,
+      which in turn gets automatically imported during a _late_ build stage.
+
+    For more information about `Directory.Build.*`, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build
+  -->
+
+  <Import Project="$(MSBuildThisFileDirectory)components\*.targets" />
+
+</Project>

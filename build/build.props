@@ -1,0 +1,23 @@
+<Project>
+  <!--
+    This file is intended to be imported by a `Directory.Build.props`,
+      which in turn gets automatically imported during an _early_ build stage.
+
+    For more information about `Directory.Build.*`, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build
+  -->
+
+
+  <!--
+    Sets variables to help us understand the type of project being built.
+  -->
+  <PropertyGroup>
+    <!-- Variable `UsingMicrosoftNETSdkWeb` is set when `Microsoft.NET.Sdk.Web` is being used, but we don't want to couple our other files directly to it. -->
+    <IsAspNetWebProject Condition="'$(UsingMicrosoftNETSdkWeb)'=='true'">true</IsAspNetWebProject>
+
+    <IsTestProject Condition="$(MSBuildProjectName.EndsWith('Tests'))">true</IsTestProject>
+    <IsTestTargetExampleProject Condition="$(MSBuildProjectName.Contains('TargetExamples'))">true</IsTestTargetExampleProject>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)components\*.props" />
+
+</Project>
