@@ -1,4 +1,4 @@
-namespace PanMoq.Specimens.ClassLibrary;
+namespace PanMoq.TargetExamples.ClassLibrary;
 
 public interface IVertebrate
 {
