@@ -1,0 +1,24 @@
+<Project>
+  <!--
+    This file is intended to be imported (indirectly) by a `Directory.Build.props`,
+      which in turn gets automatically imported during an _early_ build stage.
+
+    For more information about `Directory.Build.*`, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build
+  -->
+
+  <ItemGroup Condition="'$(IsTestProject)'=='true'">
+    <PackageReference Include="coverlet.collector" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="6.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.analyzers" Version="1.0.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

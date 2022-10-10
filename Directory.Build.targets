@@ -1,9 +1,9 @@
 <Project>
   <!--
-    `Directory.Build.props` is automatically imported during an _early_ build stage.
+    `Directory.Build.targets` is automatically imported during a _late_ build stage.
     For more information about `Directory.Build.*`, see: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build
   -->
 
-  <Import Project="$(MSBuildThisFileDirectory)build\*.props" />
+  <Import Project="$(MSBuildThisFileDirectory)build\*.targets" />
 
 </Project>

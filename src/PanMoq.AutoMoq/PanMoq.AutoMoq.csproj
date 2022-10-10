@@ -2,11 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
 
-    <Authors>Mark Seemann; Bruce Markham</Authors>
-    <Copyright>Copyright © Mark Seemann 2011; Copyright © Bruce Markham 2022</Copyright>
+    <Authors>Mark Seemann; $(PanMoqAuthors)</Authors>
+    <Copyright>Copyright © 2011 Mark Seemann; Copyright © $(CopyrightYearLatest) $(PanMoqAuthors)</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
