@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+
+    <Description>Provides an auto-mocking container with an intuitive extensible API for creating test specimens.
+
+Commonly Used Types:
+PanMoq.AutoMoqFixture</Description>
   </PropertyGroup>
 
   <ItemGroup>

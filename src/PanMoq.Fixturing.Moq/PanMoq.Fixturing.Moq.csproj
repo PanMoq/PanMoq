@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <Description>Provides an abstraction and extensibility point for supporting PanMoq's use of AutoFixture.
+
+Commonly Used Types:
+PanMoq.Fixturing.Moq.Moq</Description>
   </PropertyGroup>
 
   <ItemGroup>
