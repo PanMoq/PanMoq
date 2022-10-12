@@ -5,6 +5,12 @@
 
     <Authors>Mark Seemann; $(PanMoqAuthors)</Authors>
     <Copyright>Copyright © 2011 Mark Seemann; Copyright © $(CopyrightYearLatest) $(PanMoqAuthors)</Copyright>
+    <Description>Supports PanMoq's wiring cross-wiring between AutoFixture and Moq. A fork of AutoFixture.AutoMoq.
+
+Commonly Used Types:
+PanMoq.AutoMoq.Extensions.CrosswiringExtensions
+PanMoq.AutoMoq.AutoFixtureMoqDefaultValueProvider
+PanMoq.AutoMoq.AutoMoqCustomization</Description>
   </PropertyGroup>
 
   <ItemGroup>

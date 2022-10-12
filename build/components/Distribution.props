@@ -16,6 +16,7 @@
     <IsPackable Condition="'$(IsTestTargetExampleProject)'=='true'">false</IsPackable>
     <IsPackable Condition="'$(IsPackable)'!='false'">true</IsPackable>
     <PackageId Condition="'$(IsPackable)'=='true' And '$(PackageId)'==''">$(AssemblyName)</PackageId>
+    <GenerateDocumentationFile Condition="'$(IsPackable)'=='true'">true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)'=='true'">

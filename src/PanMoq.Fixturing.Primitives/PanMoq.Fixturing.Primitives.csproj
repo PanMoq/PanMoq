@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+
+    <Description>Provides an abstractions and extensibility primitives for PanMoq.
+
+Commonly Used Types:
+PanMoq.Fixturing.Primitives.IFixture
+PanMoq.Fixturing.Primitives.ISpecimenBroker
+PanMoq.Fixturing.Primitives.ISpecimenProvider</Description>
   </PropertyGroup>
 
 </Project>
