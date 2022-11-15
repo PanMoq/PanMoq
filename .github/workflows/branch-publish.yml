@@ -95,7 +95,7 @@ jobs:
     - name: Build
       run: dotnet build PanMoq.sln --configuration Release --no-restore
     - name: Package outputs
-      run: dotnet pack PanMoq.sln --configuration Release --no-restore --include-source --output dist --p:BuildOnPack=false --p:IncludeSymbols=true --p:SymbolPackageFormat=snupkg --p:PackageVersion="${{ needs.calculate-version.outputs.gitversion_nuGetVersionV2 }}" --p:AssemblyFileVersionAttribute="${{ needs.calculate-version.outputs.gitversion_assemblySemFileVer }}" --p:AssemblyInformationalVersionAttribute="${{ needs.calculate-version.outputs.gitversion_informationalVersion }}" --p:AssemblyVersionAttribute="${{ needs.calculate-version.outputs.gitversion_assemblySemVer }}"
+      run: dotnet pack PanMoq.sln --configuration Release --no-restore --output dist --p:BuildOnPack=false --p:IncludeSymbols=true --p:SymbolPackageFormat=snupkg --p:PackageVersion="${{ needs.calculate-version.outputs.gitversion_nuGetVersionV2 }}" --p:AssemblyFileVersionAttribute="${{ needs.calculate-version.outputs.gitversion_assemblySemFileVer }}" --p:AssemblyInformationalVersionAttribute="${{ needs.calculate-version.outputs.gitversion_informationalVersion }}" --p:AssemblyVersionAttribute="${{ needs.calculate-version.outputs.gitversion_assemblySemVer }}"
     - name: Archive package artifacts
       uses: actions/upload-artifact@v3
       with:
